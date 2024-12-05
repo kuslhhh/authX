@@ -2,9 +2,11 @@ import express from "express";
 import cors from "cors";
 import 'dotenv/config';
 import cookieParser from "cookie-parser";
+import connect from "./config/mongo.js";
 
 const app = express();
 const port = process.env.PORT || 8080;
+connect();
 
 app.use(express.json());
 app.use(cookieParser());

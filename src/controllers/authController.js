@@ -33,9 +33,9 @@ export const register = async (req, res) => {
         });
 
         const mailOptions = {
-            from : process.env.SENDER_EMAIL,
-            to : email,
-            subject : 'Welcome to ksh',
+            from: process.env.SENDER_EMAIL,
+            to: email,
+            subject: 'Welcome to ksh',
             text: `Hello ${name},\n\nWelcome to ksh. Your account has been created with email id : ${email}`
         }
 
@@ -95,10 +95,27 @@ export const logout = async (req, res) => {
             maxAge: 1 * 7 * 24 * 60 * 60 * 1000,
         });
 
-        return res.json({ success: true, message: 'Logout successful' }); 
+        return res.json({ success: true, message: 'Logout successful' });
 
     } catch (error) {
         return res.json({ success: false, message: error.message });
     }
 
+}
+
+export const sendVerifyOtp = async (req, res) => {
+    try {
+
+        const {userId} = req.body;
+        const user = await userModel.findById(userId);
+
+        if(user.isAccountVerified){
+            return res.json({ success: false, message: 'Account already verified' });
+        } 
+
+        Math.floor(100000 + Math.random() * 900000)
+
+    } catch (error) {
+        return res.json({ success: false, message: error.message });
+    }
 }

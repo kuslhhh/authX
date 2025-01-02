@@ -113,7 +113,7 @@ export const sendVerifyOtp = async (req, res) => {
             return res.json({ success: false, message: 'Account already verified' });
         } 
 
-        Math.floor(100000 + Math.random() * 900000)
+        const otp = String(Math.floor(100000 + Math.random() * 900000));
 
     } catch (error) {
         return res.json({ success: false, message: error.message });

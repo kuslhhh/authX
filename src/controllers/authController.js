@@ -136,21 +136,52 @@ export const sendVerifyOtp = async (req, res) => {
     }
 }
 
+
 export const verifyEmail = async (req, res) => {
     const { userId, otp } = req.body;
 
     if (!userId || !otp) {
-        return res.json({ success: false, message: 'User id and OTP are required' });
+        return res.json({ success: false, message: 'User ID and OTP are required' });
     }
 
     try {
         const user = await userModel.findById(userId);
 
         if (!user) {
-            return res.json({ success: false, message: 'Invalid user id' });
+            return res.json({ success: false, message: 'Invalid user ID' });
         }
 
-    } catch(error) {
+        if (!user.verifyOtp || user.verifyOtp !== otp) {
+            return res.json({ success: false, message: 'Invalid OTP' });
+        }
+
+        if (user.verifyOtpExpireAt < Date.now()) {
+            return res.json({ success: false, message: 'OTP expired' });
+        }
+
+        user.isAccountVerified = true;
+        user.verifyOtp = null; // Use `null` for clarity
+        user.verifyOtpExpireAt = null; // Reset expiration timestamp
+
+        await user.save();
+
+        return res.json({
+            success: true,
+            message: 'Email verified successfully.'
+        });
+
+    } catch (error) {
         return res.json({ success: false, message: error.message });
     }
+};
+
+export const isAuthenticated = async (req, res, next) => {
+    try {
+        
+        return res.json({success: true})
+
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
 }
+
